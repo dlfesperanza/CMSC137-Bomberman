@@ -1,2 +1,4 @@
 # CMSC137-Bomberman
-CMSC 137 CD-3L
+CMSC 137 Project
+CD-3L
+1st Sem AY: '18-'19
