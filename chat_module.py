@@ -57,7 +57,7 @@ def connect_player_to_server(player, packet):
 		socket.send(connect_packet_conf(connectPacket,player,packet,choice)) 
 
 		#RECEIVE FROM SERVER
-		connect_data = bytearray(socket.recv(1024)) # receive response from server
+		connect_data = bytearray(socket.recv(1024))
 		connectPacket.ParseFromString(connect_data)
 	else:
 		connectPacket.type = TcpPacket.ERR_LDNE
@@ -67,7 +67,7 @@ def connect_player_to_server(player, packet):
 				socket.send(connect_packet_conf(connectPacket,player,packet,choice)) 
 				
 				#RECEIVE FROM SERVER
-				connect_data = bytearray(socket.recv(1024)) # receive response from server
+				connect_data = bytearray(socket.recv(1024))
 				connectPacket.ParseFromString(connect_data)
 
 				if connectPacket.type == TcpPacket.ERR_LFULL:
@@ -75,7 +75,7 @@ def connect_player_to_server(player, packet):
 			except:
 				if connectPacket.type == TcpPacket.ERR_LDNE:
 					print("Lobby DOES NOT EXIST. Try entering another lobby id.\n")
-	print('Received from server: ' + str(connectPacket))  # show in terminal
+	print('Received from server: ' + str(connectPacket))
 	return connectPacket
 
 def chat_packet_conf(player,packet, lobby_id,chatPacket):
@@ -122,7 +122,6 @@ def chat_main(player, packet, lobby_id, connectPacket):
 				if packet_type == 0: 
 					disconnectPacket.ParseFromString(packet_received)
 					if disconnectPacket.player.name == "":
-						#if the disconnection is normal
 						if disconnectPacket.update == 0:
 							print("You left!")
 						else:
