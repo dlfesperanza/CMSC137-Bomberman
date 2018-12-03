@@ -25,7 +25,6 @@ def action(move):
 	global lastMove
 	global bombPos
 
-	bombPos = {}
 	tempLabel = Label(startFrame)
 	bomb = Image.open("./images/bomb.png")
 	bombicon = ImageTk.PhotoImage(bomb)
@@ -42,12 +41,8 @@ def action(move):
 				labels[playerPos[0]][playerPos[1]+1] = Label(startFrame, image=playericon)
 				labels[playerPos[0]][playerPos[1]+1].image = playericon
 				labels[playerPos[0]][playerPos[1]+1].place(x=(playerPos[1]+1)*18,y=playerPos[0]*18)
-				bombPos[0] = playerPos[0]
-				bombPos[1] = playerPos[1]
 				startFrame.pack()
-				# labels[playerPos[0]][playerPos[1]].after(3000,explodeBomb(bombPos[0],bombPos[1]))
-				t = Timer(3.0, explodeBomb(bombPos[0],bombPos[1]))
-				t.start()
+				
 				lastMove = '*'
 			else:
 				tempLabel = labels[playerPos[0]][playerPos[1]]
@@ -71,7 +66,6 @@ def action(move):
 				labels[playerPos[0]][playerPos[1]-1] = Label(startFrame, image=playericon)
 				labels[playerPos[0]][playerPos[1]-1].image = playericon
 				labels[playerPos[0]][playerPos[1]-1].place(x=(playerPos[1]-1)*18,y=playerPos[0]*18)
-				labels[playerPos[0]][playerPos[1]].after(3000,explodeBomb(playerPos[0],playerPos[1]))
 				lastMove = '*'
 			else:
 				tempLabel = labels[playerPos[0]][playerPos[1]]
@@ -95,7 +89,6 @@ def action(move):
 				labels[playerPos[0]-1][playerPos[1]] = Label(startFrame, image=playericon)
 				labels[playerPos[0]-1][playerPos[1]].image = playericon
 				labels[playerPos[0]-1][playerPos[1]].place(x=(playerPos[1])*18,y=(playerPos[0]-1)*18)
-				labels[playerPos[0]][playerPos[1]].after(3000,explodeBomb(playerPos[0],playerPos[1]))
 				lastMove = '*'
 			else:
 				tempLabel = labels[playerPos[0]][playerPos[1]]
@@ -119,7 +112,6 @@ def action(move):
 				labels[playerPos[0]+1][playerPos[1]] = Label(startFrame, image=playericon)
 				labels[playerPos[0]+1][playerPos[1]].image = playericon
 				labels[playerPos[0]+1][playerPos[1]].place(x=(playerPos[1])*18,y=(playerPos[0]+1)*18)
-				labels[playerPos[0]][playerPos[1]].after(3000,explodeBomb(playerPos[0],playerPos[1]))
 				lastMove = '*'
 			else:
 				tempLabel = labels[playerPos[0]][playerPos[1]]
@@ -134,12 +126,16 @@ def action(move):
 			mapData[playerPos[0]][playerPos[1]] = 'g'
 			playerPos[0] = playerPos[0] + 1
 	elif move == " ": #place bomb
+		bombPos[0] = playerPos[0]
+		bombPos[1] = playerPos[1]
 		placebomb = Image.open("./images/placebomb.png")
 		placebombicon = ImageTk.PhotoImage(placebomb)
 		labels[playerPos[0]][playerPos[1]] = Label(startFrame, image=placebombicon)
 		labels[playerPos[0]][playerPos[1]].image = placebombicon
 		labels[playerPos[0]][playerPos[1]].place(x=(playerPos[1]*18),y=playerPos[0]*18)
-		# labels[playerPos[0]][playerPos[1]].after(3000,explodeBomb(playerPos[0],playerPos[1]))
+		labels[playerPos[0]][playerPos[1]].after(3000,explodeBomb)
+		print("*")
+
 
 		startFrame.pack()
 		lastMove = " "
@@ -185,6 +181,12 @@ def initMap():
 				labels[i][j] = Label(startFrame, image=playericon)
 				labels[i][j].image = playericon
 				labels[i][j].place(x=ypos,y=xpos)
+			elif mapData[i][j] == 'b':
+				box = Image.open("./images/box.png")
+				boxicon = ImageTk.PhotoImage(box)
+				labels[i][j] = Label(startFrame, image=boxicon)
+				labels[i][j].image = boxicon
+				labels[i][j].place(x=ypos,y=xpos)
 			ypos = ypos + 18
 		xpos = xpos + 18
 	startFrame.bind("<Key>", key)
@@ -197,6 +199,7 @@ def start():
 	global playerPos
 	global backBtn
 	global lastMove
+	global bombPos
 
 	lastMove = '*'
 	homeFrame.pack_forget()
@@ -212,21 +215,70 @@ def start():
 	playerPos = {}
 	playerPos[0] = 1 #x position
 	playerPos[1] = 1 #y position
+	bombPos = {}
 
 	initMap()
 	window.mainloop()
 	
-def explodeBomb(xpos,ypos):
+def explodeBomb():
 	global mapData
 	global startFrame
 	global labels
+	global bombPos
 
-	print("boom!")
 	grass = Image.open("./images/grass.png")
 	grassicon = ImageTk.PhotoImage(grass)
-	labels[xpos][ypos] = Label(startFrame, image=grassicon)
-	labels[xpos][ypos].image = grassicon
-	labels[xpos][ypos].place(x=ypos*18,y=xpos*18)
+	labels[bombPos[0]][bombPos[1]] = Label(startFrame, image=grassicon)
+	labels[bombPos[0]][bombPos[1]].image = grassicon
+	labels[bombPos[0]][bombPos[1]].place(x=bombPos[1]*18,y=bombPos[0]*18)
+
+	if mapData[bombPos[0]-1][bombPos[1]-1] != "w" and mapData[bombPos[0]-1][bombPos[1]-1] != "m":
+		labels[bombPos[0]-1][bombPos[1]-1] = Label(startFrame, image=grassicon)
+		labels[bombPos[0]-1][bombPos[1]-1].image = grassicon
+		labels[bombPos[0]-1][bombPos[1]-1].place(x=(bombPos[1]-1)*18,y=(bombPos[0]-1)*18)
+		mapData[bombPos[0]-1][bombPos[1]-1] = 'g'
+
+	if mapData[bombPos[0]-1][bombPos[1]] != "w" and mapData[bombPos[0]-1][bombPos[1]] != "m":
+		labels[bombPos[0]-1][bombPos[1]] = Label(startFrame, image=grassicon)
+		labels[bombPos[0]-1][bombPos[1]].image = grassicon
+		labels[bombPos[0]-1][bombPos[1]].place(x=(bombPos[1])*18,y=(bombPos[0]-1)*18)
+		mapData[bombPos[0]-1][bombPos[1]] = 'g'
+
+	if mapData[bombPos[0]-1][bombPos[1]+1] != "w" and mapData[bombPos[0]-1][bombPos[1]+1] != "m":
+		labels[bombPos[0]-1][bombPos[1]+1] = Label(startFrame, image=grassicon)
+		labels[bombPos[0]-1][bombPos[1]+1].image = grassicon
+		labels[bombPos[0]-1][bombPos[1]+1].place(x=(bombPos[1]+1)*18,y=(bombPos[0]-1)*18)
+		mapData[bombPos[0]-1][bombPos[1]+1] = 'g'
+
+	if mapData[bombPos[0]][bombPos[1]-1] != "w" and mapData[bombPos[0]][bombPos[1]-1] != "m":
+		labels[bombPos[0]][bombPos[1]-1] = Label(startFrame, image=grassicon)
+		labels[bombPos[0]][bombPos[1]-1].image = grassicon
+		labels[bombPos[0]][bombPos[1]-1].place(x=(bombPos[1]-1)*18,y=(bombPos[0])*18)
+		mapData[bombPos[0]][bombPos[1]-1] = 'g'
+
+	if mapData[bombPos[0]][bombPos[1]+1] != "w" and mapData[bombPos[0]][bombPos[1]+1] != "m":
+		labels[bombPos[0]][bombPos[1]+1] = Label(startFrame, image=grassicon)
+		labels[bombPos[0]][bombPos[1]+1].image = grassicon
+		labels[bombPos[0]][bombPos[1]+1].place(x=(bombPos[1]+1)*18,y=(bombPos[0])*18)
+		mapData[bombPos[0]][bombPos[1]+1] = 'g'
+
+	if mapData[bombPos[0]+1][bombPos[1]-1] != "w" and mapData[bombPos[0]+1][bombPos[1]-1] != "m":
+		labels[bombPos[0]+1][bombPos[1]-1] = Label(startFrame, image=grassicon)
+		labels[bombPos[0]+1][bombPos[1]-1].image = grassicon
+		labels[bombPos[0]+1][bombPos[1]-1].place(x=(bombPos[1]-1)*18,y=(bombPos[0]+1)*18)
+		mapData[bombPos[0]+1][bombPos[1]-1] = 'g'
+
+	if mapData[bombPos[0]+1][bombPos[1]] != "w" and mapData[bombPos[0]+1][bombPos[1]] != "m":
+		labels[bombPos[0]+1][bombPos[1]] = Label(startFrame, image=grassicon)
+		labels[bombPos[0]+1][bombPos[1]].image = grassicon
+		labels[bombPos[0]+1][bombPos[1]].place(x=(bombPos[1])*18,y=(bombPos[0]+1)*18)
+		mapData[bombPos[0]+1][bombPos[1]] = 'g'
+
+	if mapData[bombPos[0]+1][bombPos[1]+1] != "w" and mapData[bombPos[0]+1][bombPos[1]+1] != "m":
+		labels[bombPos[0]+1][bombPos[1]+1] = Label(startFrame, image=grassicon)
+		labels[bombPos[0]+1][bombPos[1]+1].image = grassicon
+		labels[bombPos[0]+1][bombPos[1]+1].place(x=(bombPos[1]+1)*18,y=(bombPos[0]+1)*18)
+		mapData[bombPos[0]+1][bombPos[1]+1] = 'g'
 
 	startFrame.pack()
 
