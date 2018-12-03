@@ -9,6 +9,7 @@ d: right
 
 from tkinter import *
 from PIL import Image, ImageTk
+from threading import Timer
 
 def key(event):
 	action(event.char)
@@ -21,28 +22,63 @@ def action(move):
 	global playerPos
 	global startFrame
 	global labels
+	global lastMove
+	global bombPos
+
+	bombPos = {}
 	tempLabel = Label(startFrame)
+	bomb = Image.open("./images/bomb.png")
+	bombicon = ImageTk.PhotoImage(bomb)
+	player = Image.open("./images/player.png")
+	playericon = ImageTk.PhotoImage(player)
 
 	if move == 'd': 	#right
 		if mapData[playerPos[0]][playerPos[1]+1] == 'g':
-			tempLabel = labels[playerPos[0]][playerPos[1]]
-			labels[playerPos[0]][playerPos[1]] = labels[playerPos[0]][playerPos[1]+1]
-			labels[playerPos[0]][playerPos[1]+1] = tempLabel
-			labels[playerPos[0]][playerPos[1]].place(x=(playerPos[1])*18,y=playerPos[0]*18)
-			labels[playerPos[0]][playerPos[1]+1].place(x=(playerPos[1]+1)*18,y=playerPos[0]*18)
+			if lastMove == " ":
+				labels[playerPos[0]][playerPos[1]] = Label(startFrame, image=bombicon)
+				labels[playerPos[0]][playerPos[1]].image = bombicon
+				labels[playerPos[0]][playerPos[1]].place(x=(playerPos[1]*18),y=playerPos[0]*18)
 
-			startFrame.pack()
+				labels[playerPos[0]][playerPos[1]+1] = Label(startFrame, image=playericon)
+				labels[playerPos[0]][playerPos[1]+1].image = playericon
+				labels[playerPos[0]][playerPos[1]+1].place(x=(playerPos[1]+1)*18,y=playerPos[0]*18)
+				bombPos[0] = playerPos[0]
+				bombPos[1] = playerPos[1]
+				startFrame.pack()
+				# labels[playerPos[0]][playerPos[1]].after(3000,explodeBomb(bombPos[0],bombPos[1]))
+				t = Timer(3.0, explodeBomb(bombPos[0],bombPos[1]))
+				t.start()
+				lastMove = '*'
+			else:
+				tempLabel = labels[playerPos[0]][playerPos[1]]
+				labels[playerPos[0]][playerPos[1]] = labels[playerPos[0]][playerPos[1]+1]
+				labels[playerPos[0]][playerPos[1]+1] = tempLabel
+				labels[playerPos[0]][playerPos[1]].place(x=(playerPos[1])*18,y=playerPos[0]*18)
+				labels[playerPos[0]][playerPos[1]+1].place(x=(playerPos[1]+1)*18,y=playerPos[0]*18)
+
+				startFrame.pack()
 
 			mapData[playerPos[0]][playerPos[1]+1] = 'p'
 			mapData[playerPos[0]][playerPos[1]] = 'g'
 			playerPos[1] = playerPos[1] + 1
 	elif move == 'a': 	#left
 		if mapData[playerPos[0]][playerPos[1]-1] == 'g':
-			tempLabel = labels[playerPos[0]][playerPos[1]]
-			labels[playerPos[0]][playerPos[1]] = labels[playerPos[0]][playerPos[1]-1]
-			labels[playerPos[0]][playerPos[1]-1] = tempLabel
-			labels[playerPos[0]][playerPos[1]].place(x=(playerPos[1])*18,y=playerPos[0]*18)
-			labels[playerPos[0]][playerPos[1]-1].place(x=(playerPos[1]-1)*18,y=playerPos[0]*18)
+			if lastMove == " ":
+				labels[playerPos[0]][playerPos[1]] = Label(startFrame, image=bombicon)
+				labels[playerPos[0]][playerPos[1]].image = bombicon
+				labels[playerPos[0]][playerPos[1]].place(x=(playerPos[1]*18),y=playerPos[0]*18)
+
+				labels[playerPos[0]][playerPos[1]-1] = Label(startFrame, image=playericon)
+				labels[playerPos[0]][playerPos[1]-1].image = playericon
+				labels[playerPos[0]][playerPos[1]-1].place(x=(playerPos[1]-1)*18,y=playerPos[0]*18)
+				labels[playerPos[0]][playerPos[1]].after(3000,explodeBomb(playerPos[0],playerPos[1]))
+				lastMove = '*'
+			else:
+				tempLabel = labels[playerPos[0]][playerPos[1]]
+				labels[playerPos[0]][playerPos[1]] = labels[playerPos[0]][playerPos[1]-1]
+				labels[playerPos[0]][playerPos[1]-1] = tempLabel
+				labels[playerPos[0]][playerPos[1]].place(x=(playerPos[1])*18,y=playerPos[0]*18)
+				labels[playerPos[0]][playerPos[1]-1].place(x=(playerPos[1]-1)*18,y=playerPos[0]*18)
 
 			startFrame.pack()
 
@@ -51,11 +87,22 @@ def action(move):
 			playerPos[1] = playerPos[1] - 1
 	elif move == 'w': 	#up
 		if mapData[playerPos[0]-1][playerPos[1]] == 'g':
-			tempLabel = labels[playerPos[0]][playerPos[1]]
-			labels[playerPos[0]][playerPos[1]] = labels[playerPos[0]-1][playerPos[1]]
-			labels[playerPos[0]-1][playerPos[1]] = tempLabel
-			labels[playerPos[0]][playerPos[1]].place(x=(playerPos[1])*18,y=playerPos[0]*18)
-			labels[playerPos[0]-1][playerPos[1]].place(x=(playerPos[1])*18,y=(playerPos[0]-1)*18)
+			if lastMove == " ":
+				labels[playerPos[0]][playerPos[1]] = Label(startFrame, image=bombicon)
+				labels[playerPos[0]][playerPos[1]].image = bombicon
+				labels[playerPos[0]][playerPos[1]].place(x=(playerPos[1]*18),y=playerPos[0]*18)
+
+				labels[playerPos[0]-1][playerPos[1]] = Label(startFrame, image=playericon)
+				labels[playerPos[0]-1][playerPos[1]].image = playericon
+				labels[playerPos[0]-1][playerPos[1]].place(x=(playerPos[1])*18,y=(playerPos[0]-1)*18)
+				labels[playerPos[0]][playerPos[1]].after(3000,explodeBomb(playerPos[0],playerPos[1]))
+				lastMove = '*'
+			else:
+				tempLabel = labels[playerPos[0]][playerPos[1]]
+				labels[playerPos[0]][playerPos[1]] = labels[playerPos[0]-1][playerPos[1]]
+				labels[playerPos[0]-1][playerPos[1]] = tempLabel
+				labels[playerPos[0]][playerPos[1]].place(x=(playerPos[1])*18,y=playerPos[0]*18)
+				labels[playerPos[0]-1][playerPos[1]].place(x=(playerPos[1])*18,y=(playerPos[0]-1)*18)
 
 			startFrame.pack()
 
@@ -64,17 +111,38 @@ def action(move):
 			playerPos[0] = playerPos[0] - 1
 	elif move == 's': 	#down
 		if mapData[playerPos[0]+1][playerPos[1]] == 'g':
-			tempLabel = labels[playerPos[0]][playerPos[1]]
-			labels[playerPos[0]][playerPos[1]] = labels[playerPos[0]+1][playerPos[1]]
-			labels[playerPos[0]+1][playerPos[1]] = tempLabel
-			labels[playerPos[0]][playerPos[1]].place(x=(playerPos[1]*18),y=playerPos[0]*18)
-			labels[playerPos[0]+1][playerPos[1]].place(x=(playerPos[1]*18),y=(playerPos[0]+1)*18)
+			if lastMove == " ":
+				labels[playerPos[0]][playerPos[1]] = Label(startFrame, image=bombicon)
+				labels[playerPos[0]][playerPos[1]].image = bombicon
+				labels[playerPos[0]][playerPos[1]].place(x=(playerPos[1]*18),y=playerPos[0]*18)
+
+				labels[playerPos[0]+1][playerPos[1]] = Label(startFrame, image=playericon)
+				labels[playerPos[0]+1][playerPos[1]].image = playericon
+				labels[playerPos[0]+1][playerPos[1]].place(x=(playerPos[1])*18,y=(playerPos[0]+1)*18)
+				labels[playerPos[0]][playerPos[1]].after(3000,explodeBomb(playerPos[0],playerPos[1]))
+				lastMove = '*'
+			else:
+				tempLabel = labels[playerPos[0]][playerPos[1]]
+				labels[playerPos[0]][playerPos[1]] = labels[playerPos[0]+1][playerPos[1]]
+				labels[playerPos[0]+1][playerPos[1]] = tempLabel
+				labels[playerPos[0]][playerPos[1]].place(x=(playerPos[1]*18),y=playerPos[0]*18)
+				labels[playerPos[0]+1][playerPos[1]].place(x=(playerPos[1]*18),y=(playerPos[0]+1)*18)
 
 			startFrame.pack()
 
 			mapData[playerPos[0]+1][playerPos[1]] = 'p'
 			mapData[playerPos[0]][playerPos[1]] = 'g'
 			playerPos[0] = playerPos[0] + 1
+	elif move == " ": #place bomb
+		placebomb = Image.open("./images/placebomb.png")
+		placebombicon = ImageTk.PhotoImage(placebomb)
+		labels[playerPos[0]][playerPos[1]] = Label(startFrame, image=placebombicon)
+		labels[playerPos[0]][playerPos[1]].image = placebombicon
+		labels[playerPos[0]][playerPos[1]].place(x=(playerPos[1]*18),y=playerPos[0]*18)
+		# labels[playerPos[0]][playerPos[1]].after(3000,explodeBomb(playerPos[0],playerPos[1]))
+
+		startFrame.pack()
+		lastMove = " "
 	window.mainloop()
 
 def initMap():
@@ -128,7 +196,9 @@ def start():
 	global startFrame
 	global playerPos
 	global backBtn
+	global lastMove
 
+	lastMove = '*'
 	homeFrame.pack_forget()
 	window.geometry("800x505")
 	startFrame = Frame(window,width = 600, height = 505)
@@ -146,6 +216,19 @@ def start():
 	initMap()
 	window.mainloop()
 	
+def explodeBomb(xpos,ypos):
+	global mapData
+	global startFrame
+	global labels
+
+	print("boom!")
+	grass = Image.open("./images/grass.png")
+	grassicon = ImageTk.PhotoImage(grass)
+	labels[xpos][ypos] = Label(startFrame, image=grassicon)
+	labels[xpos][ypos].image = grassicon
+	labels[xpos][ypos].place(x=ypos*18,y=xpos*18)
+
+	startFrame.pack()
 
 def howToPlay():
 	homeFrame.pack_forget()
