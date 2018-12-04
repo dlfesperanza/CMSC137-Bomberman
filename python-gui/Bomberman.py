@@ -18,6 +18,15 @@ def key(event):
 def callback(event):
     startFrame.focus_set()
 
+def printMap():
+	global mapData
+
+	m = {}
+	m = mapData
+	print("\n")
+	for i in range(0,len(mapData)):
+		print(m[i][0],m[i][1],m[i][2],m[i][3],m[i][4],m[i][5],m[i][6],m[i][7],m[i][8],m[i][9],m[i][10],m[i][11],m[i][12],m[i][13],m[i][14])
+
 def updateLabel(xpos,ypos,img):
 	global labels
 	global startFrame
@@ -70,8 +79,9 @@ def grassLabel(x1,y1,x2,y2):
 		labels[x2][y2] = Label(startFrame, image=grassicon)
 		labels[x2][y2].image = grassicon
 		labels[x2][y2].place(x=(y2)*18,y=(x2)*18)
-		mapData[x2][y2] = 'g'
 
+	mapData[x1][y1] = 'g'
+	mapData[x2][y2] = 'g'
 	startFrame.pack(side=LEFT)
 
 def updatePowerup(powerup):
@@ -85,7 +95,6 @@ def updatePowerup(powerup):
 		powerups[2] = 1
 	elif powerup == '4':
 		powerups[3] = 1
-
 	print(powerups)
 
 def action(move):
@@ -111,15 +120,17 @@ def action(move):
 				
 				lastMove = '*'
 			else:
-				switchLabels1(playerPos[0],playerPos[1],playerPos[1]+1)
+				updateLabel(playerPos[0],playerPos[1],grassicon)
+				updateLabel(playerPos[0],playerPos[1]+1,playericon)
 
 			mapData[playerPos[0]][playerPos[1]+1] = 'p'
 			mapData[playerPos[0]][playerPos[1]] = 'g'
 			playerPos[1] = playerPos[1] + 1
 		elif mapData[playerPos[0]][playerPos[1]+1] == '1' or mapData[playerPos[0]][playerPos[1]+1] == '2' or mapData[playerPos[0]][playerPos[1]+1] == '3' or mapData[playerPos[0]][playerPos[1]+1] == '4':
 			updatePowerup(mapData[playerPos[0]][playerPos[1]+1])
-			switchLabels1(playerPos[0],playerPos[1],playerPos[1]+1)
 			updateLabel(playerPos[0],playerPos[1],grassicon)
+			updateLabel(playerPos[0],playerPos[1]+1,grassicon)
+			updateLabel(playerPos[0],playerPos[1]+1,playericon)
 
 			mapData[playerPos[0]][playerPos[1]+1] = 'p'
 			mapData[playerPos[0]][playerPos[1]] = 'g'
@@ -133,15 +144,17 @@ def action(move):
 
 				lastMove = '*'
 			else:
-				switchLabels1(playerPos[0],playerPos[1],playerPos[1]-1)
+				updateLabel(playerPos[0],playerPos[1],grassicon)
+				updateLabel(playerPos[0],playerPos[1]-1,playericon)
 
 			mapData[playerPos[0]][playerPos[1]-1] = 'p'
 			mapData[playerPos[0]][playerPos[1]] = 'g'
 			playerPos[1] = playerPos[1] - 1
 		elif mapData[playerPos[0]][playerPos[1]-1] == '1' or mapData[playerPos[0]][playerPos[1]-1] == '2' or mapData[playerPos[0]][playerPos[1]-1] == '3' or mapData[playerPos[0]][playerPos[1]-1] == '4':
 			updatePowerup(mapData[playerPos[0]][playerPos[1]-1])
-			switchLabels1(playerPos[0],playerPos[1],playerPos[1]-1)
 			updateLabel(playerPos[0],playerPos[1],grassicon)
+			updateLabel(playerPos[0],playerPos[1]-1,grassicon)
+			updateLabel(playerPos[0],playerPos[1]-1,playericon)
 
 			mapData[playerPos[0]][playerPos[1]-1] = 'p'
 			mapData[playerPos[0]][playerPos[1]] = 'g'
@@ -154,15 +167,17 @@ def action(move):
 
 				lastMove = '*'
 			else:
-				switchLabels2(playerPos[0],playerPos[1],playerPos[0]-1)
+				updateLabel(playerPos[0],playerPos[1],grassicon)
+				updateLabel(playerPos[0]-1,playerPos[1],playericon)
 
 			mapData[playerPos[0]-1][playerPos[1]] = 'p'
 			mapData[playerPos[0]][playerPos[1]] = 'g'
 			playerPos[0] = playerPos[0] - 1
 		elif mapData[playerPos[0]-1][playerPos[1]] == '1' or mapData[playerPos[0]-1][playerPos[1]] == '2' or mapData[playerPos[0]-1][playerPos[1]] == '3' or mapData[playerPos[0]-1][playerPos[1]] == '4':
 			updatePowerup(mapData[playerPos[0]-1][playerPos[1]])
-			switchLabels2(playerPos[0],playerPos[1],playerPos[0]-1)
 			updateLabel(playerPos[0],playerPos[1],grassicon)
+			updateLabel(playerPos[0]-1,playerPos[1],grassicon)
+			updateLabel(playerPos[0]-1,playerPos[1],playericon)
 
 			mapData[playerPos[0]-1][playerPos[1]] = 'p'
 			mapData[playerPos[0]][playerPos[1]] = 'g'
@@ -175,15 +190,18 @@ def action(move):
 
 				lastMove = '*'
 			else:
-				switchLabels2(playerPos[0],playerPos[1],playerPos[0]+1)
+				updateLabel(playerPos[0],playerPos[1],grassicon)
+				updateLabel(playerPos[0]+1,playerPos[1],playericon)
 
 			mapData[playerPos[0]+1][playerPos[1]] = 'p'
 			mapData[playerPos[0]][playerPos[1]] = 'g'
 			playerPos[0] = playerPos[0] + 1
 		elif mapData[playerPos[0]+1][playerPos[1]] == '1' or mapData[playerPos[0]+1][playerPos[1]] == '2' or mapData[playerPos[0]+1][playerPos[1]] == '3' or mapData[playerPos[0]+1][playerPos[1]] == '4':
 			updatePowerup(mapData[playerPos[0]+1][playerPos[1]])
-			switchLabels2(playerPos[0],playerPos[1],playerPos[0]+1)
 			updateLabel(playerPos[0],playerPos[1],grassicon)
+			updateLabel(playerPos[0]+1,playerPos[1],grassicon)
+			updateLabel(playerPos[0]+1,playerPos[1],playericon)
+			
 
 			mapData[playerPos[0]+1][playerPos[1]] = 'p'
 			mapData[playerPos[0]][playerPos[1]] = 'g'
@@ -196,10 +214,14 @@ def action(move):
 		labels[playerPos[0]][playerPos[1]] = Label(startFrame, image=placebombicon)
 		labels[playerPos[0]][playerPos[1]].image = placebombicon
 		labels[playerPos[0]][playerPos[1]].place(x=(playerPos[1]*18),y=playerPos[0]*18)
-		labels[playerPos[0]][playerPos[1]].after(3000,explodeBomb)
+		if powerups[1] == 1: #if fuse powerup obtained
+			labels[playerPos[0]][playerPos[1]].after(1000,explodeBomb)
+		else:
+			labels[playerPos[0]][playerPos[1]].after(2000,explodeBomb)
 
 		startFrame.pack(side=LEFT)
 		lastMove = " "
+	printMap()
 	window.mainloop()
 
 def initMap():
@@ -373,7 +395,7 @@ def loadFileReader(): #Reads the map
 	return mapData
 
 '''============================================================================'''
-
+sys.setrecursionlimit(1500)
 window = Tk()
 window.title("Bomberman")
 window.geometry("600x505")
