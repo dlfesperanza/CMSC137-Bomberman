@@ -5,6 +5,7 @@ w: up
 a: left
 s: down
 d: right
+space: drop bomb
 '''
 
 from tkinter import *
@@ -28,7 +29,7 @@ def action(move):
 	tempLabel = Label(startFrame)
 	bomb = Image.open("./images/bomb.png")
 	bombicon = ImageTk.PhotoImage(bomb)
-	player = Image.open("./images/player.png")
+	player = Image.open("./images/player1.png")
 	playericon = ImageTk.PhotoImage(player)
 
 	if move == 'd': 	#right
@@ -41,7 +42,7 @@ def action(move):
 				labels[playerPos[0]][playerPos[1]+1] = Label(startFrame, image=playericon)
 				labels[playerPos[0]][playerPos[1]+1].image = playericon
 				labels[playerPos[0]][playerPos[1]+1].place(x=(playerPos[1]+1)*18,y=playerPos[0]*18)
-				startFrame.pack()
+				startFrame.pack(side=LEFT)
 				
 				lastMove = '*'
 			else:
@@ -51,7 +52,7 @@ def action(move):
 				labels[playerPos[0]][playerPos[1]].place(x=(playerPos[1])*18,y=playerPos[0]*18)
 				labels[playerPos[0]][playerPos[1]+1].place(x=(playerPos[1]+1)*18,y=playerPos[0]*18)
 
-				startFrame.pack()
+				startFrame.pack(side=LEFT)
 
 			mapData[playerPos[0]][playerPos[1]+1] = 'p'
 			mapData[playerPos[0]][playerPos[1]] = 'g'
@@ -74,7 +75,7 @@ def action(move):
 				labels[playerPos[0]][playerPos[1]].place(x=(playerPos[1])*18,y=playerPos[0]*18)
 				labels[playerPos[0]][playerPos[1]-1].place(x=(playerPos[1]-1)*18,y=playerPos[0]*18)
 
-			startFrame.pack()
+			startFrame.pack(side=LEFT)
 
 			mapData[playerPos[0]][playerPos[1]-1] = 'p'
 			mapData[playerPos[0]][playerPos[1]] = 'g'
@@ -97,7 +98,7 @@ def action(move):
 				labels[playerPos[0]][playerPos[1]].place(x=(playerPos[1])*18,y=playerPos[0]*18)
 				labels[playerPos[0]-1][playerPos[1]].place(x=(playerPos[1])*18,y=(playerPos[0]-1)*18)
 
-			startFrame.pack()
+			startFrame.pack(side=LEFT)
 
 			mapData[playerPos[0]-1][playerPos[1]] = 'p'
 			mapData[playerPos[0]][playerPos[1]] = 'g'
@@ -120,7 +121,7 @@ def action(move):
 				labels[playerPos[0]][playerPos[1]].place(x=(playerPos[1]*18),y=playerPos[0]*18)
 				labels[playerPos[0]+1][playerPos[1]].place(x=(playerPos[1]*18),y=(playerPos[0]+1)*18)
 
-			startFrame.pack()
+			startFrame.pack(side=LEFT)
 
 			mapData[playerPos[0]+1][playerPos[1]] = 'p'
 			mapData[playerPos[0]][playerPos[1]] = 'g'
@@ -128,7 +129,7 @@ def action(move):
 	elif move == " ": #place bomb
 		bombPos[0] = playerPos[0]
 		bombPos[1] = playerPos[1]
-		placebomb = Image.open("./images/placebomb.png")
+		placebomb = Image.open("./images/placebomb1.png")
 		placebombicon = ImageTk.PhotoImage(placebomb)
 		labels[playerPos[0]][playerPos[1]] = Label(startFrame, image=placebombicon)
 		labels[playerPos[0]][playerPos[1]].image = placebombicon
@@ -137,7 +138,7 @@ def action(move):
 		print("*")
 
 
-		startFrame.pack()
+		startFrame.pack(side=LEFT)
 		lastMove = " "
 	window.mainloop()
 
@@ -176,7 +177,7 @@ def initMap():
 				labels[i][j].image = grassicon
 				labels[i][j].place(x=ypos,y=xpos)
 			elif mapData[i][j] == 'p':
-				player = Image.open("./images/player.png")
+				player = Image.open("./images/player1.png")
 				playericon = ImageTk.PhotoImage(player)
 				labels[i][j] = Label(startFrame, image=playericon)
 				labels[i][j].image = playericon
@@ -191,7 +192,7 @@ def initMap():
 		xpos = xpos + 18
 	startFrame.bind("<Key>", key)
 	startFrame.bind("<Button-1>", callback)
-	startFrame.pack()
+	startFrame.pack(side=LEFT)
 
 def start(): 
 	global mapData
@@ -203,12 +204,12 @@ def start():
 
 	lastMove = '*'
 	homeFrame.pack_forget()
-	window.geometry("800x505")
-	startFrame = Frame(window,width = 600, height = 505)
+	window.geometry("500x300")
+	startFrame = Frame(window,width = 600, height = 350)
 	
-	backBtn = Button(window, text = "Back", command = lambda: returnMenu(startFrame), bg = "silver", width = 8, fg = "black", font = ("Quicksand", 12),relief="groove") 
+	backBtn = Button(window, text = "Quit", command = lambda: returnMenu(startFrame), bg = "silver", width = 8, fg = "black", font = ("Quicksand", 12),relief="groove") 
 	
-	backBtn.place(x=60,y=18,anchor=CENTER)
+	backBtn.place(x=0,y=18,anchor=CENTER)
 	backBtn.pack()
 	
 	mapData = loadFileReader() #reads the map file and writes to a 2d array
@@ -280,7 +281,7 @@ def explodeBomb():
 		labels[bombPos[0]+1][bombPos[1]+1].place(x=(bombPos[1]+1)*18,y=(bombPos[0]+1)*18)
 		mapData[bombPos[0]+1][bombPos[1]+1] = 'g'
 
-	startFrame.pack()
+	startFrame.pack(side=LEFT)
 
 def howToPlay():
 	homeFrame.pack_forget()
