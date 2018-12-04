@@ -18,6 +18,76 @@ def key(event):
 def callback(event):
     startFrame.focus_set()
 
+def updateLabel(xpos,ypos,img):
+	global labels
+	global startFrame
+
+	labels[xpos][ypos] = Label(startFrame, image=img)
+	labels[xpos][ypos].image = img
+	labels[xpos][ypos].place(x=(ypos*18),y=xpos*18)
+
+	startFrame.pack(side=LEFT)
+
+def switchLabels1(xpos,ypos,zpos):
+	global labels
+	global startFrame
+
+	tempLabel = Label(startFrame)
+	tempLabel = labels[playerPos[0]][playerPos[1]]
+	labels[xpos][ypos] = labels[xpos][zpos]
+	labels[xpos][zpos] = tempLabel
+	labels[xpos][ypos].place(x=(ypos)*18,y=xpos*18)
+	labels[xpos][zpos].place(x=(zpos)*18,y=xpos*18)
+
+	startFrame.pack(side=LEFT)
+
+def switchLabels2(xpos,ypos,zpos):
+	global labels
+	global startFrame
+
+	tempLabel = Label(startFrame)
+	tempLabel = labels[playerPos[0]][playerPos[1]]
+	labels[xpos][ypos] = labels[zpos][ypos]
+	labels[zpos][ypos] = tempLabel
+	labels[xpos][ypos].place(x=(ypos)*18,y=xpos*18)
+	labels[zpos][ypos].place(x=(ypos)*18,y=zpos*18)
+
+	startFrame.pack(side=LEFT)
+
+def grassLabel(x1,y1,x2,y2):
+	global mapData
+	global startFrame
+	global labels
+	global bombPos
+
+	grass = Image.open("./images/grass.png")
+	grassicon = ImageTk.PhotoImage(grass)
+	labels[x1][y1] = Label(startFrame, image=grassicon)
+	labels[x1][y1].image = grassicon
+	labels[x1][y1].place(x=y1*18,y=x1*18)
+
+	if mapData[x2][y2] != "w" and mapData[x2][y2] != "m":
+		labels[x2][y2] = Label(startFrame, image=grassicon)
+		labels[x2][y2].image = grassicon
+		labels[x2][y2].place(x=(y2)*18,y=(x2)*18)
+		mapData[x2][y2] = 'g'
+
+	startFrame.pack(side=LEFT)
+
+def updatePowerup(powerup):
+	global powerups
+
+	if powerup == '1':
+		powerups[0] = 1
+	elif powerup == '2':
+		powerups[1] = 1
+	elif powerup == '3':
+		powerups[2] = 1
+	elif powerup == '4':
+		powerups[3] = 1
+
+	print(powerups)
+
 def action(move):
 	global mapData
 	global playerPos
@@ -26,56 +96,52 @@ def action(move):
 	global lastMove
 	global bombPos
 
-	tempLabel = Label(startFrame)
 	bomb = Image.open("./images/bomb.png")
 	bombicon = ImageTk.PhotoImage(bomb)
 	player = Image.open("./images/player1.png")
 	playericon = ImageTk.PhotoImage(player)
+	grass = Image.open("./images/grass.png")
+	grassicon = ImageTk.PhotoImage(grass)
 
 	if move == 'd': 	#right
 		if mapData[playerPos[0]][playerPos[1]+1] == 'g':
 			if lastMove == " ":
-				labels[playerPos[0]][playerPos[1]] = Label(startFrame, image=bombicon)
-				labels[playerPos[0]][playerPos[1]].image = bombicon
-				labels[playerPos[0]][playerPos[1]].place(x=(playerPos[1]*18),y=playerPos[0]*18)
-
-				labels[playerPos[0]][playerPos[1]+1] = Label(startFrame, image=playericon)
-				labels[playerPos[0]][playerPos[1]+1].image = playericon
-				labels[playerPos[0]][playerPos[1]+1].place(x=(playerPos[1]+1)*18,y=playerPos[0]*18)
-				startFrame.pack(side=LEFT)
+				updateLabel(playerPos[0],playerPos[1],bombicon)
+				updateLabel(playerPos[0],playerPos[1]+1,playericon)
 				
 				lastMove = '*'
 			else:
-				tempLabel = labels[playerPos[0]][playerPos[1]]
-				labels[playerPos[0]][playerPos[1]] = labels[playerPos[0]][playerPos[1]+1]
-				labels[playerPos[0]][playerPos[1]+1] = tempLabel
-				labels[playerPos[0]][playerPos[1]].place(x=(playerPos[1])*18,y=playerPos[0]*18)
-				labels[playerPos[0]][playerPos[1]+1].place(x=(playerPos[1]+1)*18,y=playerPos[0]*18)
-
-				startFrame.pack(side=LEFT)
+				switchLabels1(playerPos[0],playerPos[1],playerPos[1]+1)
 
 			mapData[playerPos[0]][playerPos[1]+1] = 'p'
 			mapData[playerPos[0]][playerPos[1]] = 'g'
 			playerPos[1] = playerPos[1] + 1
+		elif mapData[playerPos[0]][playerPos[1]+1] == '1' or mapData[playerPos[0]][playerPos[1]+1] == '2' or mapData[playerPos[0]][playerPos[1]+1] == '3' or mapData[playerPos[0]][playerPos[1]+1] == '4':
+			updatePowerup(mapData[playerPos[0]][playerPos[1]+1])
+			switchLabels1(playerPos[0],playerPos[1],playerPos[1]+1)
+			updateLabel(playerPos[0],playerPos[1],grassicon)
+
+			mapData[playerPos[0]][playerPos[1]+1] = 'p'
+			mapData[playerPos[0]][playerPos[1]] = 'g'
+			playerPos[1] = playerPos[1] + 1
+
 	elif move == 'a': 	#left
 		if mapData[playerPos[0]][playerPos[1]-1] == 'g':
 			if lastMove == " ":
-				labels[playerPos[0]][playerPos[1]] = Label(startFrame, image=bombicon)
-				labels[playerPos[0]][playerPos[1]].image = bombicon
-				labels[playerPos[0]][playerPos[1]].place(x=(playerPos[1]*18),y=playerPos[0]*18)
+				updateLabel(playerPos[0],playerPos[1],bombicon)
+				updateLabel(playerPos[0],playerPos[1]-1,playericon)
 
-				labels[playerPos[0]][playerPos[1]-1] = Label(startFrame, image=playericon)
-				labels[playerPos[0]][playerPos[1]-1].image = playericon
-				labels[playerPos[0]][playerPos[1]-1].place(x=(playerPos[1]-1)*18,y=playerPos[0]*18)
 				lastMove = '*'
 			else:
-				tempLabel = labels[playerPos[0]][playerPos[1]]
-				labels[playerPos[0]][playerPos[1]] = labels[playerPos[0]][playerPos[1]-1]
-				labels[playerPos[0]][playerPos[1]-1] = tempLabel
-				labels[playerPos[0]][playerPos[1]].place(x=(playerPos[1])*18,y=playerPos[0]*18)
-				labels[playerPos[0]][playerPos[1]-1].place(x=(playerPos[1]-1)*18,y=playerPos[0]*18)
+				switchLabels1(playerPos[0],playerPos[1],playerPos[1]-1)
 
-			startFrame.pack(side=LEFT)
+			mapData[playerPos[0]][playerPos[1]-1] = 'p'
+			mapData[playerPos[0]][playerPos[1]] = 'g'
+			playerPos[1] = playerPos[1] - 1
+		elif mapData[playerPos[0]][playerPos[1]-1] == '1' or mapData[playerPos[0]][playerPos[1]-1] == '2' or mapData[playerPos[0]][playerPos[1]-1] == '3' or mapData[playerPos[0]][playerPos[1]-1] == '4':
+			updatePowerup(mapData[playerPos[0]][playerPos[1]-1])
+			switchLabels1(playerPos[0],playerPos[1],playerPos[1]-1)
+			updateLabel(playerPos[0],playerPos[1],grassicon)
 
 			mapData[playerPos[0]][playerPos[1]-1] = 'p'
 			mapData[playerPos[0]][playerPos[1]] = 'g'
@@ -83,22 +149,20 @@ def action(move):
 	elif move == 'w': 	#up
 		if mapData[playerPos[0]-1][playerPos[1]] == 'g':
 			if lastMove == " ":
-				labels[playerPos[0]][playerPos[1]] = Label(startFrame, image=bombicon)
-				labels[playerPos[0]][playerPos[1]].image = bombicon
-				labels[playerPos[0]][playerPos[1]].place(x=(playerPos[1]*18),y=playerPos[0]*18)
+				updateLabel(playerPos[0],playerPos[1],bombicon)
+				updateLabel(playerPos[0]-1,playerPos[1],playericon)
 
-				labels[playerPos[0]-1][playerPos[1]] = Label(startFrame, image=playericon)
-				labels[playerPos[0]-1][playerPos[1]].image = playericon
-				labels[playerPos[0]-1][playerPos[1]].place(x=(playerPos[1])*18,y=(playerPos[0]-1)*18)
 				lastMove = '*'
 			else:
-				tempLabel = labels[playerPos[0]][playerPos[1]]
-				labels[playerPos[0]][playerPos[1]] = labels[playerPos[0]-1][playerPos[1]]
-				labels[playerPos[0]-1][playerPos[1]] = tempLabel
-				labels[playerPos[0]][playerPos[1]].place(x=(playerPos[1])*18,y=playerPos[0]*18)
-				labels[playerPos[0]-1][playerPos[1]].place(x=(playerPos[1])*18,y=(playerPos[0]-1)*18)
+				switchLabels2(playerPos[0],playerPos[1],playerPos[0]-1)
 
-			startFrame.pack(side=LEFT)
+			mapData[playerPos[0]-1][playerPos[1]] = 'p'
+			mapData[playerPos[0]][playerPos[1]] = 'g'
+			playerPos[0] = playerPos[0] - 1
+		elif mapData[playerPos[0]-1][playerPos[1]] == '1' or mapData[playerPos[0]-1][playerPos[1]] == '2' or mapData[playerPos[0]-1][playerPos[1]] == '3' or mapData[playerPos[0]-1][playerPos[1]] == '4':
+			updatePowerup(mapData[playerPos[0]-1][playerPos[1]])
+			switchLabels2(playerPos[0],playerPos[1],playerPos[0]-1)
+			updateLabel(playerPos[0],playerPos[1],grassicon)
 
 			mapData[playerPos[0]-1][playerPos[1]] = 'p'
 			mapData[playerPos[0]][playerPos[1]] = 'g'
@@ -106,22 +170,20 @@ def action(move):
 	elif move == 's': 	#down
 		if mapData[playerPos[0]+1][playerPos[1]] == 'g':
 			if lastMove == " ":
-				labels[playerPos[0]][playerPos[1]] = Label(startFrame, image=bombicon)
-				labels[playerPos[0]][playerPos[1]].image = bombicon
-				labels[playerPos[0]][playerPos[1]].place(x=(playerPos[1]*18),y=playerPos[0]*18)
+				updateLabel(playerPos[0],playerPos[1],bombicon)
+				updateLabel(playerPos[0]+1,playerPos[1],playericon)
 
-				labels[playerPos[0]+1][playerPos[1]] = Label(startFrame, image=playericon)
-				labels[playerPos[0]+1][playerPos[1]].image = playericon
-				labels[playerPos[0]+1][playerPos[1]].place(x=(playerPos[1])*18,y=(playerPos[0]+1)*18)
 				lastMove = '*'
 			else:
-				tempLabel = labels[playerPos[0]][playerPos[1]]
-				labels[playerPos[0]][playerPos[1]] = labels[playerPos[0]+1][playerPos[1]]
-				labels[playerPos[0]+1][playerPos[1]] = tempLabel
-				labels[playerPos[0]][playerPos[1]].place(x=(playerPos[1]*18),y=playerPos[0]*18)
-				labels[playerPos[0]+1][playerPos[1]].place(x=(playerPos[1]*18),y=(playerPos[0]+1)*18)
+				switchLabels2(playerPos[0],playerPos[1],playerPos[0]+1)
 
-			startFrame.pack(side=LEFT)
+			mapData[playerPos[0]+1][playerPos[1]] = 'p'
+			mapData[playerPos[0]][playerPos[1]] = 'g'
+			playerPos[0] = playerPos[0] + 1
+		elif mapData[playerPos[0]+1][playerPos[1]] == '1' or mapData[playerPos[0]+1][playerPos[1]] == '2' or mapData[playerPos[0]+1][playerPos[1]] == '3' or mapData[playerPos[0]+1][playerPos[1]] == '4':
+			updatePowerup(mapData[playerPos[0]+1][playerPos[1]])
+			switchLabels2(playerPos[0],playerPos[1],playerPos[0]+1)
+			updateLabel(playerPos[0],playerPos[1],grassicon)
 
 			mapData[playerPos[0]+1][playerPos[1]] = 'p'
 			mapData[playerPos[0]][playerPos[1]] = 'g'
@@ -135,8 +197,6 @@ def action(move):
 		labels[playerPos[0]][playerPos[1]].image = placebombicon
 		labels[playerPos[0]][playerPos[1]].place(x=(playerPos[1]*18),y=playerPos[0]*18)
 		labels[playerPos[0]][playerPos[1]].after(3000,explodeBomb)
-		print("*")
-
 
 		startFrame.pack(side=LEFT)
 		lastMove = " "
@@ -188,6 +248,30 @@ def initMap():
 				labels[i][j] = Label(startFrame, image=boxicon)
 				labels[i][j].image = boxicon
 				labels[i][j].place(x=ypos,y=xpos)
+			elif mapData[i][j] == '1':
+				gunpowder = Image.open("./images/gunpowder.png")
+				gunpowdericon = ImageTk.PhotoImage(gunpowder)
+				labels[i][j] = Label(startFrame, image=gunpowdericon)
+				labels[i][j].image = gunpowdericon
+				labels[i][j].place(x=ypos,y=xpos)
+			elif mapData[i][j] == '2':
+				fuse = Image.open("./images/fuse.png")
+				fuseicon = ImageTk.PhotoImage(fuse)
+				labels[i][j] = Label(startFrame, image=fuseicon)
+				labels[i][j].image = fuseicon
+				labels[i][j].place(x=ypos,y=xpos)
+			elif mapData[i][j] == '3':
+				shoes = Image.open("./images/shoes.png")
+				shoesicon = ImageTk.PhotoImage(shoes)
+				labels[i][j] = Label(startFrame, image=shoesicon)
+				labels[i][j].image = shoesicon
+				labels[i][j].place(x=ypos,y=xpos)
+			elif mapData[i][j] == '4':
+				shield = Image.open("./images/shield.png")
+				shieldicon = ImageTk.PhotoImage(shield)
+				labels[i][j] = Label(startFrame, image=shieldicon)
+				labels[i][j].image = shieldicon
+				labels[i][j].place(x=ypos,y=xpos)
 			ypos = ypos + 18
 		xpos = xpos + 18
 	startFrame.bind("<Key>", key)
@@ -201,7 +285,9 @@ def start():
 	global backBtn
 	global lastMove
 	global bombPos
+	global powerups
 
+	powerups = [0,0,0,0] #empty power ups initially
 	lastMove = '*'
 	homeFrame.pack_forget()
 	window.geometry("500x300")
@@ -227,61 +313,14 @@ def explodeBomb():
 	global labels
 	global bombPos
 
-	grass = Image.open("./images/grass.png")
-	grassicon = ImageTk.PhotoImage(grass)
-	labels[bombPos[0]][bombPos[1]] = Label(startFrame, image=grassicon)
-	labels[bombPos[0]][bombPos[1]].image = grassicon
-	labels[bombPos[0]][bombPos[1]].place(x=bombPos[1]*18,y=bombPos[0]*18)
-
-	if mapData[bombPos[0]-1][bombPos[1]-1] != "w" and mapData[bombPos[0]-1][bombPos[1]-1] != "m":
-		labels[bombPos[0]-1][bombPos[1]-1] = Label(startFrame, image=grassicon)
-		labels[bombPos[0]-1][bombPos[1]-1].image = grassicon
-		labels[bombPos[0]-1][bombPos[1]-1].place(x=(bombPos[1]-1)*18,y=(bombPos[0]-1)*18)
-		mapData[bombPos[0]-1][bombPos[1]-1] = 'g'
-
-	if mapData[bombPos[0]-1][bombPos[1]] != "w" and mapData[bombPos[0]-1][bombPos[1]] != "m":
-		labels[bombPos[0]-1][bombPos[1]] = Label(startFrame, image=grassicon)
-		labels[bombPos[0]-1][bombPos[1]].image = grassicon
-		labels[bombPos[0]-1][bombPos[1]].place(x=(bombPos[1])*18,y=(bombPos[0]-1)*18)
-		mapData[bombPos[0]-1][bombPos[1]] = 'g'
-
-	if mapData[bombPos[0]-1][bombPos[1]+1] != "w" and mapData[bombPos[0]-1][bombPos[1]+1] != "m":
-		labels[bombPos[0]-1][bombPos[1]+1] = Label(startFrame, image=grassicon)
-		labels[bombPos[0]-1][bombPos[1]+1].image = grassicon
-		labels[bombPos[0]-1][bombPos[1]+1].place(x=(bombPos[1]+1)*18,y=(bombPos[0]-1)*18)
-		mapData[bombPos[0]-1][bombPos[1]+1] = 'g'
-
-	if mapData[bombPos[0]][bombPos[1]-1] != "w" and mapData[bombPos[0]][bombPos[1]-1] != "m":
-		labels[bombPos[0]][bombPos[1]-1] = Label(startFrame, image=grassicon)
-		labels[bombPos[0]][bombPos[1]-1].image = grassicon
-		labels[bombPos[0]][bombPos[1]-1].place(x=(bombPos[1]-1)*18,y=(bombPos[0])*18)
-		mapData[bombPos[0]][bombPos[1]-1] = 'g'
-
-	if mapData[bombPos[0]][bombPos[1]+1] != "w" and mapData[bombPos[0]][bombPos[1]+1] != "m":
-		labels[bombPos[0]][bombPos[1]+1] = Label(startFrame, image=grassicon)
-		labels[bombPos[0]][bombPos[1]+1].image = grassicon
-		labels[bombPos[0]][bombPos[1]+1].place(x=(bombPos[1]+1)*18,y=(bombPos[0])*18)
-		mapData[bombPos[0]][bombPos[1]+1] = 'g'
-
-	if mapData[bombPos[0]+1][bombPos[1]-1] != "w" and mapData[bombPos[0]+1][bombPos[1]-1] != "m":
-		labels[bombPos[0]+1][bombPos[1]-1] = Label(startFrame, image=grassicon)
-		labels[bombPos[0]+1][bombPos[1]-1].image = grassicon
-		labels[bombPos[0]+1][bombPos[1]-1].place(x=(bombPos[1]-1)*18,y=(bombPos[0]+1)*18)
-		mapData[bombPos[0]+1][bombPos[1]-1] = 'g'
-
-	if mapData[bombPos[0]+1][bombPos[1]] != "w" and mapData[bombPos[0]+1][bombPos[1]] != "m":
-		labels[bombPos[0]+1][bombPos[1]] = Label(startFrame, image=grassicon)
-		labels[bombPos[0]+1][bombPos[1]].image = grassicon
-		labels[bombPos[0]+1][bombPos[1]].place(x=(bombPos[1])*18,y=(bombPos[0]+1)*18)
-		mapData[bombPos[0]+1][bombPos[1]] = 'g'
-
-	if mapData[bombPos[0]+1][bombPos[1]+1] != "w" and mapData[bombPos[0]+1][bombPos[1]+1] != "m":
-		labels[bombPos[0]+1][bombPos[1]+1] = Label(startFrame, image=grassicon)
-		labels[bombPos[0]+1][bombPos[1]+1].image = grassicon
-		labels[bombPos[0]+1][bombPos[1]+1].place(x=(bombPos[1]+1)*18,y=(bombPos[0]+1)*18)
-		mapData[bombPos[0]+1][bombPos[1]+1] = 'g'
-
-	startFrame.pack(side=LEFT)
+	grassLabel(bombPos[0],bombPos[1],bombPos[0]-1,bombPos[1]-1)
+	grassLabel(bombPos[0],bombPos[1],bombPos[0]-1,bombPos[1])
+	grassLabel(bombPos[0],bombPos[1],bombPos[0]-1,bombPos[1]+1)
+	grassLabel(bombPos[0],bombPos[1],bombPos[0],bombPos[1]-1)
+	grassLabel(bombPos[0],bombPos[1],bombPos[0],bombPos[1]+1)
+	grassLabel(bombPos[0],bombPos[1],bombPos[0]+1,bombPos[1]-1)
+	grassLabel(bombPos[0],bombPos[1],bombPos[0]+1,bombPos[1])
+	grassLabel(bombPos[0],bombPos[1],bombPos[0]+1,bombPos[1]+1)
 
 def howToPlay():
 	homeFrame.pack_forget()
