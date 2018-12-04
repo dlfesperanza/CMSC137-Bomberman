@@ -69,20 +69,21 @@ def grassLabel(x1,y1,x2,y2):
 	global labels
 	global bombPos
 
-	grass = Image.open("./images/grass.png")
-	grassicon = ImageTk.PhotoImage(grass)
-	labels[x1][y1] = Label(startFrame, image=grassicon)
-	labels[x1][y1].image = grassicon
-	labels[x1][y1].place(x=y1*18,y=x1*18)
+	if (x2>=0 and x2<=12) and (y2>=0 and y2<=14):
+		grass = Image.open("./images/grass.png")
+		grassicon = ImageTk.PhotoImage(grass)
+		labels[x1][y1] = Label(startFrame, image=grassicon)
+		labels[x1][y1].image = grassicon
+		labels[x1][y1].place(x=y1*18,y=x1*18)
 
-	if mapData[x2][y2] != "w" and mapData[x2][y2] != "m":
-		labels[x2][y2] = Label(startFrame, image=grassicon)
-		labels[x2][y2].image = grassicon
-		labels[x2][y2].place(x=(y2)*18,y=(x2)*18)
+		if mapData[x2][y2] != "w" and mapData[x2][y2] != "m":
+			labels[x2][y2] = Label(startFrame, image=grassicon)
+			labels[x2][y2].image = grassicon
+			labels[x2][y2].place(x=(y2)*18,y=(x2)*18)
 
-	mapData[x1][y1] = 'g'
-	mapData[x2][y2] = 'g'
-	startFrame.pack(side=LEFT)
+		mapData[x1][y1] = 'g'
+		mapData[x2][y2] = 'g'
+		startFrame.pack(side=LEFT)
 
 def updatePowerup(powerup):
 	global powerups
@@ -334,15 +335,22 @@ def explodeBomb():
 	global startFrame
 	global labels
 	global bombPos
+	global powerups
 
-	grassLabel(bombPos[0],bombPos[1],bombPos[0]-1,bombPos[1]-1)
-	grassLabel(bombPos[0],bombPos[1],bombPos[0]-1,bombPos[1])
-	grassLabel(bombPos[0],bombPos[1],bombPos[0]-1,bombPos[1]+1)
-	grassLabel(bombPos[0],bombPos[1],bombPos[0],bombPos[1]-1)
-	grassLabel(bombPos[0],bombPos[1],bombPos[0],bombPos[1]+1)
-	grassLabel(bombPos[0],bombPos[1],bombPos[0]+1,bombPos[1]-1)
-	grassLabel(bombPos[0],bombPos[1],bombPos[0]+1,bombPos[1])
-	grassLabel(bombPos[0],bombPos[1],bombPos[0]+1,bombPos[1]+1)
+	if powerups[0] == 0: #no gunpowder powerup
+		grassLabel(bombPos[0],bombPos[1],bombPos[0]-1,bombPos[1])
+		grassLabel(bombPos[0],bombPos[1],bombPos[0],bombPos[1]-1)
+		grassLabel(bombPos[0],bombPos[1],bombPos[0],bombPos[1]+1)
+		grassLabel(bombPos[0],bombPos[1],bombPos[0]+1,bombPos[1])
+	else:
+		grassLabel(bombPos[0],bombPos[1],bombPos[0]-2,bombPos[1])
+		grassLabel(bombPos[0],bombPos[1],bombPos[0]-1,bombPos[1]-1)
+		grassLabel(bombPos[0],bombPos[1],bombPos[0]-1,bombPos[1]+1)
+		grassLabel(bombPos[0],bombPos[1],bombPos[0],bombPos[1]-2)
+		grassLabel(bombPos[0],bombPos[1],bombPos[0],bombPos[1]+2)
+		grassLabel(bombPos[0],bombPos[1],bombPos[0]+1,bombPos[1]-1)
+		grassLabel(bombPos[0],bombPos[1],bombPos[0]+1,bombPos[1]+1)
+		grassLabel(bombPos[0],bombPos[1],bombPos[0]+2,bombPos[1])
 
 def howToPlay():
 	homeFrame.pack_forget()
