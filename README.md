@@ -9,6 +9,10 @@ Various networking concepts are displayed here such as Client-Server connection 
 ### Game Rules
 Rules are similar to standard rules: https://en.wikipedia.org/wiki/Bomberman
 
+### Changing Servers
+To connect to your own dedicated server, open chat.py in a text editor
+and change the values in the HOST variable to the IP address of your server
+
 ### Controls
 - [w,a,s,d] Move
 - [spacebar] Plant Bomb
