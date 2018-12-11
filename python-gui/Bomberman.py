@@ -37,32 +37,6 @@ def updateLabel(xpos,ypos,img):
 
 	startFrame.pack(side=LEFT)
 
-def switchLabels1(xpos,ypos,zpos):
-	global labels
-	global startFrame
-
-	tempLabel = Label(startFrame)
-	tempLabel = labels[playerPos[0]][playerPos[1]]
-	labels[xpos][ypos] = labels[xpos][zpos]
-	labels[xpos][zpos] = tempLabel
-	labels[xpos][ypos].place(x=(ypos)*18,y=xpos*18)
-	labels[xpos][zpos].place(x=(zpos)*18,y=xpos*18)
-
-	startFrame.pack(side=LEFT)
-
-def switchLabels2(xpos,ypos,zpos):
-	global labels
-	global startFrame
-
-	tempLabel = Label(startFrame)
-	tempLabel = labels[playerPos[0]][playerPos[1]]
-	labels[xpos][ypos] = labels[zpos][ypos]
-	labels[zpos][ypos] = tempLabel
-	labels[xpos][ypos].place(x=(ypos)*18,y=xpos*18)
-	labels[zpos][ypos].place(x=(ypos)*18,y=zpos*18)
-
-	startFrame.pack(side=LEFT)
-
 def grassLabel(x1,y1,x2,y2):
 	global mapData
 	global startFrame
@@ -316,7 +290,7 @@ def start():
 	window.geometry("500x300")
 	startFrame = Frame(window,width = 600, height = 350)
 	
-	backBtn = Button(window, text = "Quit", command = lambda: returnMenu(startFrame), bg = "#C0C0C0", width = 8, fg = "black", font = ("Quicksand", 12),relief="groove") 
+	backBtn = Button(window, text = "Quit", command = lambda: returnMenu(startFrame, backBtn), bg = "#C0C0C0", width = 8, fg = "black", font = ("Quicksand", 12),relief="groove") 
 	
 	backBtn.place(x=0,y=18,anchor=CENTER)
 	backBtn.pack()
@@ -352,6 +326,15 @@ def explodeBomb():
 		grassLabel(bombPos[0],bombPos[1],bombPos[0]+1,bombPos[1]+1)
 		grassLabel(bombPos[0],bombPos[1],bombPos[0]+2,bombPos[1])
 
+	count=0
+	for i in range(0,len(mapData)):
+		for j in range(0,len(mapData[0])):
+			if mapData[i][j] == 'p':
+				count = count + 1
+				break
+	if count == 0:
+		gameover(backBtn)
+
 def howToPlay():
 	homeFrame.pack_forget()
 	
@@ -359,7 +342,7 @@ def howToPlay():
 	photo = ImageTk.PhotoImage(Image.open("./images/howtoplay-bg.png"))
 	picLbl = Label(howFrame, image=photo,width=600,height=505)
 	picLbl.place(x=1, y=1, relwidth=1, relheight=1)
-	backBtn = Button(picLbl, text = "Back", command = lambda: returnMenu(howFrame), bg = "#C0C0C0", width = 8, fg = "black", font = ("Quicksand", 12),relief="groove") 
+	backBtn = Button(picLbl, text = "Back", command = lambda: returnMenu(howFrame, backBtn), bg = "#C0C0C0", width = 8, fg = "black", font = ("Quicksand", 12),relief="groove") 
 	picLbl.pack()
 	backBtn.pack()
 	backBtn.place(x=60,y=18,anchor=CENTER)
@@ -367,25 +350,27 @@ def howToPlay():
 	howFrame.pack()
 	window.mainloop()
 
-def highscores():
-	homeFrame.pack_forget()
+def gameover(backBtn):
+	backBtn.pack_forget()
+	startFrame.pack_forget()
 	
-	hsFrame = Frame(window, width = 25)
-	photo = ImageTk.PhotoImage(Image.open("./images/highscore-bg.png"))
-	picLbl = Label(hsFrame, image=photo,width=600,height=505)
+	gameoverFrame = Frame(window, width = 25)
+	photo = PhotoImage(file="./images/gameover.png")
+	picLbl = Label(gameoverFrame, image=photo,width=600,height=505)
 	picLbl.place(x=1, y=1, relwidth=1, relheight=1)
-	backBtn = Button(picLbl, text = "Back", command = lambda: returnMenu(hsFrame), bg = "#C0C0C0", width = 8, fg = "black", font = ("Quicksand", 12),relief="groove") 
+	backBtn = Button(picLbl, text = "Back to Menu", command = lambda: returnMenu(gameoverFrame, backBtn), bg = "silver", width = 12, fg = "black", font = ("Quicksand", 12),relief="groove") 
 	picLbl.pack()
 	backBtn.pack()
-	backBtn.place(x=60,y=18,anchor=CENTER)
+	backBtn.place(x=300,y=300,anchor=CENTER)
 	
-	hsFrame.pack()
+	gameoverFrame.pack()
+	window.geometry("600x505")
 	window.mainloop()
 
 def exit(): #For Exit button; exits the GUI/game
 	window.destroy()
 
-def returnMenu(frame): #Forgets previous frame
+def returnMenu(frame,backBtn): #Forgets previous frame
 	backBtn.pack_forget()
 	frame.pack_forget()
 	homeFrame.pack()
@@ -424,18 +409,15 @@ picLbl.place(x=1, y=1, relwidth=1, relheight=1)
 #Menu Buttons
 startBtn = Button(picLbl, text = "Start", fg = "red", width = 8, font = ("Quicksand", 12),command=start, bg="white",relief="groove")
 howtoplayBtn = Button(picLbl, text = "How to Play", fg = "red", width = 8, font = ("Quicksand", 12),command=howToPlay, bg="white",relief="groove")
-highscoreBtn = Button(picLbl, text = "High Scores", fg = "red", width = 8, font = ("Quicksand", 12),command=highscores, bg="white",relief="groove")
 exitBtn = Button(picLbl, text = "Exit", fg = "red", width = 8, font = ("Quicksand", 12), command = exit, bg="white",relief="groove")
 #Pack
 picLbl.pack()
 startBtn.pack()
-startBtn.place(x=300,y=260,anchor=CENTER)
+startBtn.place(x=300,y=300,anchor=CENTER)
 howtoplayBtn.pack()
-howtoplayBtn.place(x=300,y=300,anchor=CENTER)
-highscoreBtn.pack()
-highscoreBtn.place(x=300,y=340,anchor=CENTER)
+howtoplayBtn.place(x=300,y=350,anchor=CENTER)
 exitBtn.pack()
-exitBtn.place(x=300,y=380,anchor=CENTER)
+exitBtn.place(x=300,y=400,anchor=CENTER)
 homeFrame.pack()
 
 chatvar = chatClass()
