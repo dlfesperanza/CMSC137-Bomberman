@@ -142,7 +142,7 @@ def chat_main():
 				if packet_type == 1:
 					connectPacket.ParseFromString(packet_received)
 					top.displayTextBox.configure(state="normal")
-					top.displayTextBox.insert(tk.END,chatPacket.player.name+"connected!")
+					top.displayTextBox.insert(tk.END,connectPacket.player.name+" connected!\n")
 					top.displayTextBox.configure(state="disabled")
 					print(connectPacket.player.name + " connected!")
 
@@ -157,11 +157,14 @@ def chat_main():
 							print("You left!")
 						else:
 							top.displayTextBox.configure(state="normal")
-							top.displayTextBox.insert("Unknown error occured.\nYou have been disconnected from the game")
+							top.displayTextBox.insert("Unknown error occured.\nYou have been disconnected from the game\n")
 							top.displayTextBox.configure(state="disabled")
 							print("Unknown error occured.\nYou have been disconnected from the game")
 						sys.exit()
-					else :
+					else :	
+						top.displayTextBox.configure(state="normal")
+						top.displayTextBox.insert(tk.END,disconnectPacket.player.name+" left!\n")
+						top.displayTextBox.configure(state="disabled")
 						print(disconnectPacket.player.name + " left!")
 			#MESSAGE
 			else: 
