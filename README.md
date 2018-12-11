@@ -21,19 +21,18 @@ and change the values in the HOST variable to the IP address of your server
 ### Linux
 1. Make sure that your computer has Python3 installed by 
     typing in the terminal : `python3 --version`
-
 2. If your computer does not have Python3, follow this [guide](https://docs.python-guide.org/starting/install3/linux/)
-3. Install the Tkinter library : `sudo apt-get install python3-tk`
+3. Install the Tkinter library : `sudo apt-get install python3-tk`<br />
     For Python 3.6 and above : `sudo apt-get install python3.6-t.k`
     
-4. Clone this repository into your desired path by typing
+4. Clone this repository into your desired path by typing <br />
     into the terminal : `git clone https://github.com/dlfesperanza/CMSC137-Bomberman.git`
-    
+
 5. Navigate into the python-gui folder by typing : `cd /[Installation Directory]/CMSC137-Bomberman/python-gui`
 6. Run the game from Python3 : `python3 Bomberman.py`
 
 ### Windows
-1. Follow the same steps above but use suitable commands for Windows
+ Follow the same steps above but use suitable commands for Windows
 
 ## Acknowledgements
 Tkinter is a Python GUI toolkit. Documentation can be found [here](https://docs.python.org/3/library/tk.html) </br>
