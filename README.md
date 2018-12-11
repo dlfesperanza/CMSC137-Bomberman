@@ -1,9 +1,35 @@
 # CMSC137-Bomberman
-CMSC 137 Project
-CD-3L
-1st Sem AY: '18-'19
 
-Romero, Manas, Esperanza, Mariano
+Bomberman remake written in Python3 by CMSC137 CD-3L Group Boom Boom
+ 
+## How to play
 
-Chat Module:
-	python3 chat_module.py
+### Game Rules
+Rules are similar to standard rules: https://en.wikipedia.org/wiki/Bomberman
+
+### Controls
+- [w,a,s,d] Move
+- [spacebar] Plant Bomb
+
+## Installation Guide
+### Linux
+1. Make sure that your computer has Python3 installed by 
+    typing in the terminal : `python3 --version`
+
+2. If your computer does not have Python3, follow this [guide](https://docs.python-guide.org/starting/install3/linux/)
+3. Install the Tkinter library : `sudo apt-get install python3-tk`
+    For Python 3.6 and above : `sudo apt-get install python3.6-t.k`
+    
+4. Clone this repository into your desired path by typing
+    into the terminal : `git clone https://github.com/dlfesperanza/CMSC137-Bomberman.git`
+    
+5. Navigate into the python-gui folder by typing : `cd /[Installation Directory]/CMSC137-Bomberman/python-gui`
+6. Run the game from Python3 : `python3 Bomberman.py`
+
+### Windows
+1. Follow the same steps above but use suitable commands for Windows
+
+## Acknowledgements
+
+## License
+This software is under [MIT License](LICENSE.md)
