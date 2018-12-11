@@ -2,8 +2,7 @@
 
 Bomberman remake written in Python3 by CMSC137 CD-3L Group Boom Boom.
 This project is a requirement for the subject CMSC 137 : Data Communications and Networking
-Various networking concepts are displayed here such as Cleint-Server connection using
-TCP and UDP
+Various networking concepts are displayed here such as Client-Server connection using TCP and UDP
  
 ## How to play
 
